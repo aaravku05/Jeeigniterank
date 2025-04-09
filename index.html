@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Rank Finder | Ultra Pro Max</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <style>
+    ::selection { background-color: #f472b6; color: white; }
+    input:focus { outline: none; box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.4); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-500 via-pink-500 to-red-400 min-h-screen flex items-center justify-center p-6">
+  <div class="bg-white shadow-2xl rounded-3xl w-full max-w-3xl p-8 space-y-6">
+    <h1 class="text-4xl font-extrabold text-center text-gray-800 drop-shadow-lg">Student Rank Finder</h1>
+    <p class="text-center text-gray-600">Search by <strong>SS No.</strong> or <strong>Name</strong></p>
+
+    <input id="searchInput" type="text" placeholder="Enter SS No. or Name"
+      class="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400"/>
+
+    <div id="result" class="bg-gray-50 p-4 rounded-xl text-gray-800 shadow-inner text-lg hidden">
+      <!-- Student data will be shown here -->
+    </div>
+
+    <p id="noResult" class="text-center text-white font-semibold hidden">No student found. Try again.</p>
+  </div>
+
+  <script>
+    const studentData = [
+  {
+    "SS No": "SCS1117132",
+    "Total Marks": 1235,
+    "Name": "RUDRANSH KESHRI",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 1
+  },
+  {
+    "SS No": "SCS1336923",
+    "Total Marks": 1202,
+    "Name": "ATHARV BINAMI",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 2
+  },
+  {
+    "SS No": "SCS1594304",
+    "Total Marks": 1175,
+    "Name": "AYUSH SOMNATH MORE",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 3
+  },
+  {
+    "SS No": "SCS928262",
+    "Total Marks": 1140,
+    "Name": "ARNAV JAIN",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 4
+  },
+  {
+    "SS No": "SCS823440",
+    "Total Marks": 1138,
+    "Name": "ANIMESH KUMAR",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 5
+  },
+  {
+    "SS No": "SCS1552222",
+    "Total Marks": 1124,
+    "Name": "TEJASSVA  PRATAP SINGH",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 6
+  },
+  {
+    "SS No": "SCS1671104",
+    "Total Marks": 1083,
+    "Name": "SAISH BORDE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 7
+  },
+  {
+    "SS No": "SCS1609688",
+    "Total Marks": 1021,
+    "Name": "TANMAY SANTOSH KORADE",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 8
+  },
+  {
+    "SS No": "SCS1576352",
+    "Total Marks": 1007,
+    "Name": "KANHAIYYA DILIP AVHAD ",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 9
+  },
+  {
+    "SS No": "SCS1019764",
+    "Total Marks": 996,
+    "Name": "SAINATH DASH ",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 10
+  },
+  {
+    "SS No": "SCS1571462",
+    "Total Marks": 992,
+    "Name": "VEDANT DATTATRAY SHITOLE",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 11
+  },
+  {
+    "SS No": "SCS1402102",
+    "Total Marks": 976,
+    "Name": "NISHANK JAIN",
+    "State": "Madhya Pradesh",
+    "Branch": "GWALIOR",
+    "Rank": 12
+  },
+  {
+    "SS No": "SCS1542478",
+    "Total Marks": 956,
+    "Name": "JAINM JAIN",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 13
+  },
+  {
+    "SS No": "SCS1576350",
+    "Total Marks": 951,
+    "Name": "SNEHANSHU SANTOSH DOMAL ",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 14
+  },
+  {
+    "SS No": "SCS1560549",
+    "Total Marks": 947,
+    "Name": "KARITKEY PRASHANT DARAWADE",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 15
+  },
+  {
+    "SS No": "SCS1507576",
+    "Total Marks": 905,
+    "Name": "KAUSTUB SHARAD MATE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 16
+  },
+  {
+    "SS No": "SCS1171243",
+    "Total Marks": 904,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 17
+  },
+  {
+    "SS No": "SCS1507681",
+    "Total Marks": 903,
+    "Name": "VIDHI KAILAS BANKAR",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 18
+  },
+  {
+    "SS No": "SCS934667",
+    "Total Marks": 885,
+    "Name": "AVDHOOT",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 19
+  },
+  {
+    "SS No": "SCS1507652",
+    "Total Marks": 873,
+    "Name": "RADHA SANDIP DANDAWATE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 20
+  },
+  {
+    "SS No": "SCS1391648",
+    "Total Marks": 864,
+    "Name": "DHARATI NAHAR",
+    "State": "Madhya Pradesh",
+    "Branch": "RATLAM",
+    "Rank": 21
+  },
+  {
+    "SS No": "SCS1507685",
+    "Total Marks": 862,
+    "Name": "ARYAN MININATH SHINDE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 22
+  },
+  {
+    "SS No": "SCS1403980",
+    "Total Marks": 850,
+    "Name": "HARSHVARDHAN DESAI",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 2",
+    "Rank": 23
+  },
+  {
+    "SS No": "SCS1399960",
+    "Total Marks": 838,
+    "Name": "SAMRIDDHI VIDHATE",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 2",
+    "Rank": 24
+  },
+  {
+    "SS No": "SCS1507667",
+    "Total Marks": 832,
+    "Name": "SHRAVANI RAVINDRA GAYKE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 25
+  },
+  {
+    "SS No": "SCS1019554",
+    "Total Marks": 832,
+    "Name": "PRATHAMESH",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 25
+  },
+  {
+    "SS No": "SCS1507206",
+    "Total Marks": 826,
+    "Name": "HARDIK VILAS TURAKNE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 27
+  },
+  {
+    "SS No": "SCS979721",
+    "Total Marks": 751,
+    "Name": "NABHYA KUMAR ",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 28
+  },
+  {
+    "SS No": "SCS1379903",
+    "Total Marks": 727,
+    "Name": "HARSHITA RATHORE",
+    "State": "Madhya Pradesh",
+    "Branch": "RATLAM",
+    "Rank": 29
+  },
+  {
+    "SS No": "SCS1159053",
+    "Total Marks": 711,
+    "Name": "ONKAR",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 30
+  },
+  {
+    "SS No": "SCS1165781",
+    "Total Marks": 710,
+    "Name": "JAY PANDE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 31
+  },
+  {
+    "SS No": "SCS1378383",
+    "Total Marks": 708,
+    "Name": "DAKSH PUROHIT",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 2",
+    "Rank": 32
+  },
+  {
+    "SS No": "SCS1507631",
+    "Total Marks": 708,
+    "Name": "VARAD SANDIP SHELKE",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 32
+  },
+  {
+    "SS No": "SCS1402379",
+    "Total Marks": 656,
+    "Name": "ANANYA KIRAN SALUNKE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 34
+  },
+  {
+    "SS No": "SCS960785",
+    "Total Marks": 652,
+    "Name": "JAINISHA",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 35
+  },
+  {
+    "SS No": "SCS1594147",
+    "Total Marks": 638,
+    "Name": "VIRAJ GAIKWAD ",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 2",
+    "Rank": 36
+  },
+  {
+    "SS No": "SCS1599427",
+    "Total Marks": 637,
+    "Name": "ANAM APSAR PATHAN",
+    "State": "Maharashtra",
+    "Branch": "AHMED NAGAR",
+    "Rank": 37
+  },
+  {
+    "SS No": "SCS1194662",
+    "Total Marks": 631,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 38
+  },
+  {
+    "SS No": "SCS1556121",
+    "Total Marks": 602,
+    "Name": "VEER DESAI",
+    "State": "Madhya Pradesh",
+    "Branch": "RATLAM",
+    "Rank": 39
+  },
+  {
+    "SS No": "SCS1401170",
+    "Total Marks": 599,
+    "Name": "PRIYANSHU NIKAM",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 2",
+    "Rank": 40
+  },
+  {
+    "SS No": "SCS1628587",
+    "Total Marks": 592,
+    "Name": "VEDANT VIJAY VISAVE",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 41
+  },
+  {
+    "SS No": "SCS1507647",
+    "Total Marks": 568,
+    "Name": "LAKSHITA BHARAT MALI",
+    "State": "MAHARASHTRA",
+    "Branch": "SHIRDI",
+    "Rank": 42
+  },
+  {
+    "SS No": "SCS1388747",
+    "Total Marks": 568,
+    "Name": "ANGEL MARU",
+    "State": "Madhya Pradesh",
+    "Branch": "RATLAM",
+    "Rank": 42
+  },
+  {
+    "SS No": "SCS979711",
+    "Total Marks": 566,
+    "Name": "NABHANYU",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 44
+  },
+  {
+    "SS No": "SCS1375698",
+    "Total Marks": 560,
+    "Name": "SHREEKANT CHAVAN",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 45
+  },
+  {
+    "SS No": "SCS937346",
+    "Total Marks": 556,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 46
+  },
+  {
+    "SS No": "SCS1612855",
+    "Total Marks": 552,
+    "Name": "SHAIVI",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 47
+  },
+  {
+    "SS No": "SCS1173706",
+    "Total Marks": 524,
+    "Name": "SARTHAK JADHAV",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 48
+  },
+  {
+    "SS No": "SCS695093",
+    "Total Marks": 500,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 49
+  },
+  {
+    "SS No": "SCS1363302",
+    "Total Marks": 500,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 49
+  },
+  {
+    "SS No": "SCS1408543",
+    "Total Marks": 488,
+    "Name": "SHRIHAAN DESAI",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 2",
+    "Rank": 51
+  },
+  {
+    "SS No": "SCS1336911",
+    "Total Marks": 463,
+    "Name": "ISHAAN SHARMA",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 52
+  },
+  {
+    "SS No": "SCS1411235",
+    "Total Marks": 455,
+    "Name": "SHREYA GOPAL MANE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 53
+  },
+  {
+    "SS No": "SCS1587228",
+    "Total Marks": 443,
+    "Name": "RAJESHWARI SHANTARAM BHOYE",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 54
+  },
+  {
+    "SS No": "SCS1362034",
+    "Total Marks": 436,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 55
+  },
+  {
+    "SS No": "SCS1507551",
+    "Total Marks": 431,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 56
+  },
+  {
+    "SS No": "SCS1390568",
+    "Total Marks": 416,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 57
+  },
+  {
+    "SS No": "SCS1464313",
+    "Total Marks": 403,
+    "Name": "TANISH PAWAR",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 58
+  },
+  {
+    "SS No": "SCS1708643",
+    "Total Marks": 392,
+    "Name": "AMAN KHAN",
+    "State": "Madhya Pradesh",
+    "Branch": "INDORE 1",
+    "Rank": 59
+  },
+  {
+    "SS No": "SCS799708",
+    "Total Marks": 378,
+    "Name": "AGASTYA CHAUDHARY",
+    "State": "MAHARASHTRA",
+    "Branch": "WAGHOLI ",
+    "Rank": 60
+  },
+  {
+    "SS No": "SCS1379928",
+    "Total Marks": 376,
+    "Name": "SUMIT DHAKAD",
+    "State": "Madhya Pradesh",
+    "Branch": "GWALIOR",
+    "Rank": 61
+  },
+  {
+    "SS No": "SCS1390985",
+    "Total Marks": 368,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 62
+  },
+  {
+    "SS No": "SCS1358857",
+    "Total Marks": 360,
+    "Name": "SAI PRADEEP JADHAV",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 63
+  },
+  {
+    "SS No": "SCS1167146",
+    "Total Marks": 346,
+    "Name": "RUJUTA JAMKAR",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 64
+  },
+  {
+    "SS No": "SCS1591589",
+    "Total Marks": 331,
+    "Name": "TANISHKA KALYAN DAHIPHALE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 65
+  },
+  {
+    "SS No": "SCS692594",
+    "Total Marks": 320,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 66
+  },
+  {
+    "SS No": "SCS1563491",
+    "Total Marks": 319,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 67
+  },
+  {
+    "SS No": "SCS1155012",
+    "Total Marks": 307,
+    "Name": "YASHASVI PANDYA",
+    "State": "Madhya Pradesh",
+    "Branch": "INDORE 1",
+    "Rank": 68
+  },
+  {
+    "SS No": "SCS1390920",
+    "Total Marks": 279,
+    "Name": "SHIKHAR JOHARI",
+    "State": "Madhya Pradesh",
+    "Branch": "GWALIOR",
+    "Rank": 69
+  },
+  {
+    "SS No": "SCS1347528",
+    "Total Marks": 261,
+    "Name": "AKSHADA JADHAV",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 70
+  },
+  {
+    "SS No": "SCS1221028",
+    "Total Marks": 260,
+    "Name": "SHRINIDHI THOTE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 71
+  },
+  {
+    "SS No": "934667",
+    "Total Marks": 260,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 71
+  },
+  {
+    "SS No": "SCS1413537",
+    "Total Marks": 256,
+    "Name": "RAJVEER RAJESH PATIL",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 73
+  },
+  {
+    "SS No": "SCS1616796",
+    "Total Marks": 243,
+    "Name": "ARNAV AMBORE",
+    "State": "Maharashtra",
+    "Branch": "Bavdhan ",
+    "Rank": 74
+  },
+  {
+    "SS No": "SCS1396304",
+    "Total Marks": 241,
+    "Name": "SAMARTH UTTAM KALE",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 75
+  },
+  {
+    "SS No": "SCS1588011",
+    "Total Marks": 226,
+    "Name": "GEETANJALI DHAKAD",
+    "State": "Madhya Pradesh",
+    "Branch": "Dewas",
+    "Rank": 76
+  },
+  {
+    "SS No": "SCS1414360",
+    "Total Marks": 223,
+    "Name": "SACHMAN SINGH OBEROI",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 77
+  },
+  {
+    "SS No": "1159053",
+    "Total Marks": 204,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 78
+  },
+  {
+    "SS No": "979721",
+    "Total Marks": 201,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 79
+  },
+  {
+    "SS No": "SCS1410591",
+    "Total Marks": 198,
+    "Name": "SHAUANK  AKASH MANIYAR",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 80
+  },
+  {
+    "SS No": "SCS1588002",
+    "Total Marks": 178,
+    "Name": "JASSICA PARMAR",
+    "State": "Madhya Pradesh",
+    "Branch": "Dewas",
+    "Rank": 81
+  },
+  {
+    "SS No": "SCS1411161",
+    "Total Marks": 176,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 82
+  },
+  {
+    "SS No": "SCS115903",
+    "Total Marks": 175,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 83
+  },
+  {
+    "SS No": "SCS1179186",
+    "Total Marks": 173,
+    "Name": "SHRAVANI KATKAR",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 84
+  },
+  {
+    "SS No": "SCS1382126",
+    "Total Marks": 168,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 85
+  },
+  {
+    "SS No": "SCS1376692",
+    "Total Marks": 168,
+    "Name": "HIMANSHU PATIL",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 85
+  },
+  {
+    "SS No": "979711",
+    "Total Marks": 165,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 87
+  },
+  {
+    "SS No": "SCS1351861",
+    "Total Marks": 160,
+    "Name": "SRIDATRI BHATTACHARJEE",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 88
+  },
+  {
+    "SS No": "960785",
+    "Total Marks": 156,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 89
+  },
+  {
+    "SS No": "SCS1609000",
+    "Total Marks": 152,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 90
+  },
+  {
+    "SS No": "SCS1588263",
+    "Total Marks": 149,
+    "Name": "LAKSHYA SHARMA",
+    "State": "Madhya Pradesh",
+    "Branch": "Dewas",
+    "Rank": 91
+  },
+  {
+    "SS No": "SCS1603030",
+    "Total Marks": 144,
+    "Name": "BHUMIKA GANESH SANAP",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 92
+  },
+  {
+    "SS No": "SCS1377839",
+    "Total Marks": 143,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 93
+  },
+  {
+    "SS No": "1612855",
+    "Total Marks": 137,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 94
+  },
+  {
+    "SS No": "SCS1213436",
+    "Total Marks": 134,
+    "Name": "VAISHNAVI JADHAV",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 95
+  },
+  {
+    "SS No": "SCS363302",
+    "Total Marks": 128,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 96
+  },
+  {
+    "SS No": "SCS1677094",
+    "Total Marks": 128,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 96
+  },
+  {
+    "SS No": "SCS1576041",
+    "Total Marks": 127,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 98
+  },
+  {
+    "SS No": "SCS1363588",
+    "Total Marks": 121,
+    "Name": "SHAURYA MAHESH DESHMUKH",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 99
+  },
+  {
+    "SS No": "1616796",
+    "Total Marks": 118,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 100
+  },
+  {
+    "SS No": "SCS1675958",
+    "Total Marks": 109,
+    "Name": "RUTURAJ AMBADAS MORE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 2",
+    "Rank": 101
+  },
+  {
+    "SS No": "SCS1469378",
+    "Total Marks": 105,
+    "Name": "ATHRV MADHUKAR WAGH",
+    "State": "Maharashtra",
+    "Branch": "NASHIK 1",
+    "Rank": 102
+  },
+  {
+    "SS No": "SCS1418815",
+    "Total Marks": 97,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 103
+  },
+  {
+    "SS No": "SCS1576031",
+    "Total Marks": 95,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 104
+  },
+  {
+    "SS No": "SCS1373585",
+    "Total Marks": 86,
+    "Name": "SHRUTSTI GAJANAN HUDE",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 105
+  },
+  {
+    "SS No": "SCS1358659",
+    "Total Marks": 85,
+    "Name": "SAMARTH VINAYKUMAR MORE",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 106
+  },
+  {
+    "SS No": "SCS1547681",
+    "Total Marks": 84,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 107
+  },
+  {
+    "SS No": "SCS1364888",
+    "Total Marks": 84,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 107
+  },
+  {
+    "SS No": "SCS1364686",
+    "Total Marks": 84,
+    "Name": "DIGVIJAY SHIVAJI KALYANKAR",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 107
+  },
+  {
+    "SS No": "SCS1255004",
+    "Total Marks": 80,
+    "Name": "SWASTI RAUT",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 110
+  },
+  {
+    "SS No": "SCS1588325",
+    "Total Marks": 65,
+    "Name": "ANANYA JAIN",
+    "State": "Madhya Pradesh",
+    "Branch": "Dewas",
+    "Rank": 111
+  },
+  {
+    "SS No": "SCS1147433",
+    "Total Marks": 64,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 112
+  },
+  {
+    "SS No": "SCS1588328",
+    "Total Marks": 63,
+    "Name": "ABHERI DESHPANDE",
+    "State": "Madhya Pradesh",
+    "Branch": "Dewas",
+    "Rank": 113
+  },
+  {
+    "SS No": "SCS1360690",
+    "Total Marks": 55,
+    "Name": "PRANJAL KALE",
+    "State": "Maharashtra ",
+    "Branch": "NANDED ",
+    "Rank": 114
+  },
+  {
+    "SS No": "SCS1400547",
+    "Total Marks": 53,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 115
+  },
+  {
+    "SS No": "SCS1170329",
+    "Total Marks": 52,
+    "Name": "VEDANG BHADANE",
+    "State": "Maharashtra",
+    "Branch": "Aurangabad 1",
+    "Rank": 116
+  },
+  {
+    "SS No": "SCS1542836",
+    "Total Marks": 32,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 117
+  },
+  {
+    "SS No": "SCS1393915",
+    "Total Marks": 29,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 118
+  },
+  {
+    "SS No": "SCS1888325",
+    "Total Marks": 20,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 119
+  },
+  {
+    "SS No": "SCS1S88263",
+    "Total Marks": 8,
+    "Name": NaN,
+    "State": NaN,
+    "Branch": NaN,
+    "Rank": 120
+  }
+];
+
+    const input = document.getElementById('searchInput');
+    const resultBox = document.getElementById('result');
+    const noResult = document.getElementById('noResult');
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim().toLowerCase();
+      if (query.length === 0) {
+        resultBox.classList.add('hidden');
+        noResult.classList.add('hidden');
+        return;
+      }
+
+      const student = studentData.find(s =>
+        s["SS No"].toLowerCase() === query ||
+        s["Name"].toLowerCase().includes(query)
+      );
+
+      if (student) {
+        resultBox.innerHTML = `
+          <div><strong>Name:</strong> ${student.Name}</div>
+          <div><strong>SS No:</strong> ${student["SS No"]}</div>
+          <div><strong>Marks:</strong> ${student["Total Marks"]}</div>
+          <div><strong>Rank:</strong> ${student.Rank}</div>
+          <div><strong>Branch:</strong> ${student.Branch}</div>
+          <div><strong>State:</strong> ${student.State}</div>
+        `;
+        resultBox.classList.remove('hidden');
+        noResult.classList.add('hidden');
+      } else {
+        resultBox.classList.add('hidden');
+        noResult.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
